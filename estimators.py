@@ -1,16 +1,16 @@
 import paths
 import numpy as np
 import numpy.linalg as la 
-from algopy import CGraph, Function, UTPM, dot, qr, eigh, inv, solve
+#from algopy import CGraph, Function, UTPM, dot, qr, eigh, inv, solve
 
 def estimate_noise(G,O):
     err = O - np.dot(G,leastsquares(G,O))
     return np.mean(np.diag(np.dot(err,err.T)))
 
 def leastsquares(A,b):
-    Apinv = dot(la.pinv(dot(A.T,A)),A.T)
-    W = dot(Apinv,b)
-    return W/la.norm(W)
+    Apinv = np.dot(la.pinv(np.dot(A.T,A)),A.T)
+    W = np.dot(Apinv,b)
+    return W
 
 def stein_estimator(G,O,I,k):
     """
@@ -38,22 +38,22 @@ def stein_estimator(G,O,I,k):
 if __name__=='__main__':
     np.random.seed(0)
     m = 20
-    N = 1000
-    X = np.random.randn(N,1)
-    C = np.random.randn(m,1)
-    k = 1.
+    N = 10000
+    X = 0  + 1.*np.random.randn(N,1)
+    C = 0 + 1.*np.random.randn(m,1)
+    k = 10.
     H = ((X[np.newaxis,:,:] - C[:, np.newaxis, :])**2.).sum(-1)
     H = np.exp(-( H*(k**2) ))
     H = H.T
+    #H = np.random.randn(N,m)
     theta = 0.1*np.random.randn(m,1)
     noise = 0.01*np.random.randn(N,1)
     y = np.dot(H,theta) + noise
     theta_ls = la.lstsq(H,y)[0]
-    theta_ls = theta_ls/la.norm(theta_ls)
     theta_hat = leastsquares(H,y)
     from matplotlib import pylab 
-    pylab.plot(theta_ls,label='LS')
-    pylab.plot(theta_hat,label='Pseudo Inv')
+    pylab.plot(theta_ls+0.01,label='LS')
+    pylab.plot(theta_hat+0.02,label='Pseudo Inv')
     pylab.plot(theta,label='True')
     pylab.legend()
     pylab.show()
