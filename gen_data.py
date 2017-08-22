@@ -13,3 +13,13 @@ def bi_noise(N,p1=1.,sigma1=1.0,sigma2=1.0,mu1=0.0,mu2=0.0):
 	n[:temp.shape[0],0] = temp 
 	np.random.shuffle(n)
 	return n
+
+def sinc(N):
+	d = 1
+	I = (np.random.uniform(size=(N,d), low=-10., high=10.))
+	O = np.zeros(I.shape)
+	non_zero = np.where(I!=0)
+	O[non_zero] = np.sin(I[non_zero])/I[non_zero]
+	is_zero = np.where(I==0)
+	O[is_zero] = 1
+	return I,O
