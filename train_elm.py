@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import estimators as est
 import gen_data
 
-def train_elm(I, O,n=500,gw=1.):
+def train_elm(I, O,m=500,gw=1.):
     """
     ELM: Extreme Learning Macines
     ELM uses random centers/variances for each node, but
@@ -14,16 +14,16 @@ def train_elm(I, O,n=500,gw=1.):
     From a well-cited paper:
     Extreme learning machine: Theory and applications
     """
-    n = min(O.shape[0],n)
+    m = min(O.shape[0],m)
     # Pick n random centers
     center_idx = np.arange(O.shape[0])
     np.random.shuffle(center_idx)
-    center_idx = center_idx[:n]
+    center_idx = center_idx[:m]
     
     # generate n random sigma 
     k = np.sqrt(-np.log(0.5))/gw
-    sigma = k*np.random.uniform(low=1e-7,high = 1, size=n)
-    sigma = sigma.reshape((n,1))
+    sigma = k*np.random.uniform(low=1e-7,high = 1, size=m)
+    sigma = sigma.reshape((m,1))
     sigma = np.diag(sigma[:,0])
     # sigma = np.eye(n)*k
 
