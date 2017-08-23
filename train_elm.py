@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import estimators as est
 import gen_data
 
+
 def train_elm(I, O,m=500,gw=1.):
     """
     ELM: Extreme Learning Macines
@@ -38,7 +39,7 @@ def train_elm(I, O,m=500,gw=1.):
 
 if __name__ == "__main__":
     np.random.seed(0)
-    N_train = 100
+    N_train = 500
     N_test = 5*N_train
     X_train,y_train = gen_data.sinc(N_train)
     X_test,y_test = gen_data.sinc(N_test)
@@ -47,22 +48,30 @@ if __name__ == "__main__":
     pi1 = 0.85
     mu1 = 0.
     mu2 = 0.
-    sigma1 = 1.
+    sigma1 = .5
     sigma2 = 10.
     noise_train = gen_data.bi_noise(N_train,pi1,sigma1,sigma2,mu1,mu2)
     noise_test = gen_data.bi_noise(N_test,pi1,sigma1,sigma2,mu1,mu2)
-    m = 50
-    gw = 100.0
-    r,_ = train_elm(X_train, y_train + noise_train,m,gw)   
+    m = 10
+    gw = 1.0
+    r,center_idx = train_elm(X_train, y_train + noise_train,m,gw)   
     V = r.sim_elm(X_train)
     err = abs(V - y_train)
-    print("Train MSE: ", np.sqrt((err**2.).sum(0))/(N_test))
+    print("Train MSE-0: ", np.sqrt((err**2.).sum(0))/(N_test))
     V_test = r.sim_elm(X_test)
     err = abs(V_test - y_test)
-    print("Test MSE: ", np.sqrt((err**2.).sum(0))/(N_test))
+    print("Test MSE   : ", np.sqrt((err**2.).sum(0))/(N_test))
+    alpha = .511
+    r.iterative_rbf(X_train,y_train+noise_train,center_idx,alpha)
+    V = r.sim_elm(X_train)
+    err = abs(V - y_train)
+    print("Train MSE-1: ", np.sqrt((err**2.).sum(0))/(N_test))
+    V_test1 = r.sim_elm(X_test)
+    err = abs(V_test1 - y_test)
+    print("Test MSE-1 : ", np.sqrt((err**2.).sum(0))/(N_test))
     
     plt.plot(X_test,y_test+noise_test,'.')
-    plt.plot(X_test,V_test,'r.')
-    plt.plot(X_test,y_test,'y.')
+    plt.plot(X_test,V_test,'y.')
+    plt.plot(X_test,V_test1,'g.')
+    plt.plot(X_test,y_test,'r.')
     plt.show()
-

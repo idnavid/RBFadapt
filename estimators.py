@@ -22,13 +22,15 @@ def iterative_ls(A,b,x0,alpha = 0.0):
         if alpha = 0. ==> x = x_ls
         alpha>0. ==> x is different from ls
     """
+    print(alpha)
     err = (np.dot(A,x0) - b)[:,0]
     W = np.exp(-alpha * (err**2))
     W = W/np.sum(W)
     W = np.sqrt(np.diag(W))
-    for i in range(10):
+    for i in range(5):
         x = la.lstsq(np.dot(W,A),np.dot(W,b))[0]
     return x
+
 def leastsquares(A,b):
     Apinv = np.dot(la.pinv(np.dot(A.T,A)),A.T)
     W = np.dot(Apinv,b)
@@ -69,7 +71,7 @@ if __name__=='__main__':
     theta = 0.1*np.random.randn(m,1)
     
     # Generate noise
-    p1 = 0.95
+    p1 = 1.0
     mu1 = 0. 
     mu2 = 0.
     sigma1 = .1
@@ -79,7 +81,7 @@ if __name__=='__main__':
     #
     y = np.dot(H,theta) + noise
     theta_ls = la.lstsq(H,y)[0]
-    alpha = 15
+    alpha = 0.0
     theta_i = iterative_ls(H,y,theta_ls,alpha)
     err1 = theta_ls - theta
     err2 = theta_i - theta

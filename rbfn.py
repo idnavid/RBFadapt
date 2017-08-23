@@ -3,8 +3,9 @@
 # Navid Shokouhi
 # email: navid.shokouhi@unimelb.edu.au
 # August 2017
-
 import numpy as np
+import estimators as est
+
 class Rbfn(object):
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
@@ -73,3 +74,9 @@ class Rbfn(object):
 
     def get_centers(self):
         return self.centers
+
+    def iterative_rbf(self,I,O,center_idx,alpha=0.):
+        # index of centers in input vectors I
+        G = self.get_G(I,center_idx)
+        theta = self.get_theta()
+        self.set_theta(est.iterative_ls(G,O,theta,alpha))
