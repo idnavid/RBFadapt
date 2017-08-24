@@ -39,20 +39,20 @@ def train_elm(I, O,m=500,gw=1.):
 
 if __name__ == "__main__":
     np.random.seed(0)
-    N_train = 500
+    N_train = 1000
     N_test = 5*N_train
     X_train,y_train = gen_data.sinc(N_train)
     X_test,y_test = gen_data.sinc(N_test)
 
     # Add noise
-    pi1 = 0.85
+    pi1 = 0.6
     mu1 = 0.
     mu2 = 0.
     sigma1 = .5
     sigma2 = 10.
     noise_train = gen_data.bi_noise(N_train,pi1,sigma1,sigma2,mu1,mu2)
     noise_test = gen_data.bi_noise(N_test,pi1,sigma1,sigma2,mu1,mu2)
-    m = 10
+    m = 20
     gw = 1.0
     r,center_idx = train_elm(X_train, y_train + noise_train,m,gw)   
     V = r.sim_elm(X_train)
@@ -75,3 +75,4 @@ if __name__ == "__main__":
     plt.plot(X_test,V_test1,'g.')
     plt.plot(X_test,y_test,'r.')
     plt.show()
+

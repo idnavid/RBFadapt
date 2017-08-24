@@ -22,7 +22,6 @@ def iterative_ls(A,b,x0,alpha = 0.0):
         if alpha = 0. ==> x = x_ls
         alpha>0. ==> x is different from ls
     """
-    print(alpha)
     err = (np.dot(A,x0) - b)[:,0]
     W = np.exp(-alpha * (err**2))
     W = W/np.sum(W)
