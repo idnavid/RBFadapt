@@ -11,6 +11,7 @@ def bi_noise(N,p1=1.,sigma1=1.0,sigma2=1.0,mu1=0.0,mu2=0.0,asym=False):
 	n = np.zeros((N,1))
 	if asym:
 		n2 = np.abs(n2)
+
 	temp = np.append(n1,n2)
 	n[:temp.shape[0],0] = temp 
 	np.random.shuffle(n)

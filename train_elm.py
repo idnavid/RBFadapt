@@ -5,7 +5,7 @@ import numpy.linalg as la
 import matplotlib.pyplot as plt
 import estimators as est
 import gen_data
-
+import train_ols as ols
 
 def train_elm(I, O,m=500,gw=1.):
     """
@@ -39,40 +39,62 @@ def train_elm(I, O,m=500,gw=1.):
 
 if __name__ == "__main__":
     np.random.seed(0)
-    N_train = 1000
+    N_train = 500
     N_test = 5*N_train
-    X_train,y_train = gen_data.sinc(N_train)
-    X_test,y_test = gen_data.sinc(N_test)
+    x_train,y_train = gen_data.sinc(N_train)
+    x_test,y_test = gen_data.sinc(N_test)
 
     # Add noise
-    pi1 = 0.6
-    mu1 = 0.
-    mu2 = 0.
-    sigma1 = .5
-    sigma2 = 10.
-    noise_train = gen_data.bi_noise(N_train,pi1,sigma1,sigma2,mu1,mu2)
-    noise_test = gen_data.bi_noise(N_test,pi1,sigma1,sigma2,mu1,mu2)
-    m = 20
-    gw = 1.0
-    r,center_idx = train_elm(X_train, y_train + noise_train,m,gw)   
-    V = r.sim_elm(X_train)
-    err = abs(V - y_train)
-    print("Train MSE-0: ", np.sqrt((err**2.).sum(0))/(N_test))
-    V_test = r.sim_elm(X_test)
-    err = abs(V_test - y_test)
-    print("Test MSE   : ", np.sqrt((err**2.).sum(0))/(N_test))
-    alpha = .511
-    r.iterative_rbf(X_train,y_train+noise_train,center_idx,alpha)
-    V = r.sim_elm(X_train)
-    err = abs(V - y_train)
-    print("Train MSE-1: ", np.sqrt((err**2.).sum(0))/(N_test))
-    V_test1 = r.sim_elm(X_test)
-    err = abs(V_test1 - y_test)
-    print("Test MSE-1 : ", np.sqrt((err**2.).sum(0))/(N_test))
-    
-    plt.plot(X_test,y_test+noise_test,'.')
-    plt.plot(X_test,V_test,'y.')
-    plt.plot(X_test,V_test1,'g.')
-    plt.plot(X_test,y_test,'r.')
-    plt.show()
+    import sys
+    pi1 = float(sys.argv[1])
+    NOISE=(sys.argv[2])
+    if NOISE=='H':# H for HEAVYTAIL
+        mu1 = 0.
+        mu2 = 0.
+        sigma1 = .5
+        sigma2 = 10.
+        asym=False
+    elif NOISE=='P':# P for POINTMASS
+        mu1 = 0.
+        mu2 = 10.
+        sigma1 = .5
+        sigma2 = .2
+        asym=False
+    elif NOISE=='A':# A for ASYMMETRIC
+        mu1 = 0.
+        mu2 = 1.
+        sigma1 = .5
+        sigma2 = 10.
+        asym=True
 
+    noise_train = gen_data.bi_noise(N_train,pi1,sigma1,sigma2,mu1,mu2,asym)
+    noise_test = gen_data.bi_noise(N_test,pi1,sigma1,sigma2,mu1,mu2,asym)
+    y_train_noisy = y_train + noise_train
+    y_test_noisy = y_test + noise_test
+    
+    m = 12
+    gw = 10.
+    
+    r,center_idx = train_elm(x_train, y_train_noisy,m,gw)   
+    v_train_ml = r.sim_elm(x_train)
+    v_test_ml = r.sim_elm(x_test)
+    
+    alpha = 0.1
+    r.iterative_rbf(x_train,y_train_noisy,center_idx,alpha)
+    v_train_wml = r.sim_elm(x_train)
+    v_test_wml = r.sim_elm(x_test)
+    
+    
+    # print("train ML: ",  compute_mse(v_train_ml ,y_train),end="\t")
+    # print("train IT: ",  compute_mse(v_train_wml,y_train))
+    # print("test ML : " ,  compute_mse(v_test_ml  , y_test),end="\t")
+    # print("test IT : " ,  compute_mse(v_test_wml ,y_test))
+    print("Train: ",ols.compute_mse(v_train_ml ,y_train),end=" ")
+    print(" ",ols.compute_mse(v_train_wml,y_train))
+    print("Test ",ols.compute_mse(v_test_ml  , y_test),end=" ")
+    print(" ",ols.compute_mse(v_test_wml ,y_test))
+    plt.plot(x_test,y_test_noisy,'k.')
+    plt.plot(x_test,v_test_ml,   'y.')
+    plt.plot(x_test,v_test_wml,  'g.')
+    plt.plot(x_test,y_test,      'r.')
+    plt.show()
