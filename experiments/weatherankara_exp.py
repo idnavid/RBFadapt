@@ -21,8 +21,8 @@ def print_results(mse):
 
 
 
-X_train,y_train = load_data.boston_housing('train')
-X_test, y_test  = load_data.boston_housing('test')
+X_train,y_train = load_data.weather_ankara('train')
+X_test, y_test  = load_data.weather_ankara('test')
 N_train = y_train.shape[0]
 N_test = y_test.shape[0]
 # Set noise parameters

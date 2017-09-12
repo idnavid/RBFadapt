@@ -21,8 +21,8 @@ def print_results(mse):
 
 
 
-X_train,y_train = load_data.boston_housing('train')
-X_test, y_test  = load_data.boston_housing('test')
+X_train,y_train = load_data.auto_mpg('train')
+X_test, y_test  = load_data.auto_mpg('test')
 N_train = y_train.shape[0]
 N_test = y_test.shape[0]
 # Set noise parameters
@@ -78,10 +78,14 @@ for i_iter in range(ITER):
 		gw = 1.0
 		r,center_idx = elm.train_elm(X_train,y_train_noisy,m,gw)
 		y_hat = r.sim(X_test)
+		pylab.plot(y_test)
+		pylab.plot(y_hat)
 		mse_ml[i_iter,i_m] = ols.compute_mse(y_hat,y_test)
 		alpha = 0.1
 		r.iterative_rbf(X_train,y_train_noisy,center_idx,alpha)
 		y_hat = r.sim(X_test)
+		pylab.plot(y_hat)
+		pylab.show()
 		mse_wml[i_iter,i_m] = ols.compute_mse(y_hat,y_test)
 
 print('ML: ')
