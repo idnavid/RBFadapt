@@ -7,7 +7,7 @@ pylab.rcParams['font.size'] = 18
 import sys
 sys.path.append("../")
 import gen_data
-import train_elm
+import train_kmeans
 
 N_max = 3010
 N_range = np.arange(100,N_max,100)
@@ -34,7 +34,7 @@ for iter in range(ITER):
 		n = N_range[i]
 		x,y = gen_data.sinc(n)
 		y_noisy = y + noise[:n]
-		r,center_idx = train_elm.train_elm(x, y_noisy,m,gw)   
+		r,center_idx = train_kmeans.train_kmeans(x, y_noisy,m,gw)   
 		V = r.sim_elm(x)
 		err = abs(V - y)
 		mse[i] += np.sqrt((err**2.).sum(0))/(n)
@@ -47,7 +47,7 @@ for iter in range(ITER):
 		n = N_range[i]
 		x,y = gen_data.sinc(n)
 		y_noisy = y + noise[:n]
-		r,center_idx = train_elm.train_elm(x, y_noisy,m,gw)   
+		r,center_idx = train_kmeans.train_kmeans(x, y_noisy,m,gw)   
 		V = r.sim_elm(x)
 		err = abs(V - y)
 		mse_ml[i] += np.sqrt((err**2.).sum(0))/(n)
