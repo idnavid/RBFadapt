@@ -5,6 +5,7 @@ import pylab
 sys.path.append("../")
 import gen_data
 import train_elm as elm
+import train_kmeans as kmeans
 import train_ols as ols 
 
 def print_results(mse):
@@ -26,7 +27,7 @@ X_test, y_test  = load_data.abalone('test')
 N_train = y_train.shape[0]
 N_test = y_test.shape[0]
 # Set noise parameters
-NOISE = '0'
+NOISE = 'P'
 if NOISE=='H':
 	# Heavy tail
 	pi1 = 0.8
@@ -76,12 +77,12 @@ for i_iter in range(ITER):
 		y_train_noisy = y_train + noise
 		m = m_range[i_m]
 		gw = 1.0
-		r,center_idx = elm.train_elm(X_train,y_train_noisy,m,gw)
-		y_hat = r.sim(X_test)
+		r,center_idx = kmeans.train_kmeans(X_train,y_train_noisy,m,gw)
+		y_hat = r.sim_elm(X_test)
 		mse_ml[i_iter,i_m] = ols.compute_mse(y_hat,y_test)
 		alpha = 0.1
 		r.iterative_rbf(X_train,y_train_noisy,center_idx,alpha)
-		y_hat = r.sim(X_test)
+		y_hat = r.sim_elm(X_test)
 		mse_wml[i_iter,i_m] = ols.compute_mse(y_hat,y_test)
 
 print('ML: ')

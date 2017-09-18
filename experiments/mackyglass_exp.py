@@ -17,14 +17,15 @@ def print_results(mse):
 	std_mse = np.std(mse,axis=0)
 	for i in range(avg_mse.shape[0]):
 		print(avg_mse[i],std_mse[i])
+	pylab.plot(avg_mse)
 
 
 k = 1
 N_train = 500
 N_test = 500
 
-ITER = 2
-p_range = [0.,.1,.2,.3,.4,.5]
+ITER = 100
+p_range = [0.,0.1,0.2,0.3,0.4,0.5]
 mse_wml = np.zeros((ITER,len(p_range)))
 mse_ml = np.zeros((ITER,len(p_range)))
 for i_iter in range(ITER):
@@ -43,19 +44,27 @@ for i_iter in range(ITER):
 		
 		y_train_noisy = gen_data.add_outliers(y_train,p_outliers,4.)
 
-		m = 50
-		gw = 1.
+		m = 30
+		gw = 10.
 		r,center_idx = kmeans.train_kmeans(x_train, y_train_noisy,m,gw)   
 		y_hat = r.sim_elm(x_test)
+		# pylab.plot(y_hat,label='ML')
 		mse_ml[i_iter,i_p] = ols.compute_mse(y_hat,y_test)
-
-		alpha = .99
+		alpha = .5
 		r.iterative_rbf(x_train,y_train_noisy,center_idx,alpha)
 		y_hat = r.sim_elm(x_test)
+		# pylab.plot(y_hat,label='WML')
+		# pylab.plot(y_test,label='orig')
+		# pylab.show()
 		mse_wml[i_iter,i_p] = ols.compute_mse(y_hat,y_test)
 
+print('ML')
 print_results(mse_ml)
+print('WML')
 print_results(mse_wml)
+pylab.show()
+
+
 
 
 

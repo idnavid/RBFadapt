@@ -29,8 +29,10 @@ def train_kmeans(I, O,m=500,gw=1.):
     sigma = np.zeros((m,1))
     for i in range(m):
         idx = np.array([kmeans_idx[j]==i for j in range(len(kmeans_idx))])
-        center_idx[i] = np.argmin(kmeans_distances[idx])
-        sigma[i] = np.mean(kmeans_distances[idx])
+        temp = np.array(kmeans_distances)
+        temp[np.invert(idx)] = 10
+        center_idx[i] = np.argmin(temp)
+        sigma[i] = gw*np.mean(kmeans_distances[idx])
     
     sigma = np.diag(sigma[:,0])
 
@@ -78,7 +80,7 @@ if __name__=='__main__':
     y_train_noisy = y_train + noise_train
     y_test_noisy = y_test + noise_test
     
-    m = 12
+    m = 10
     gw = 10.
     
     r,center_idx = train_kmeans(x_train, y_train_noisy,m,gw)   
