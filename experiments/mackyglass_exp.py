@@ -42,15 +42,15 @@ for i_iter in range(ITER):
 
 
 		
-		y_train_noisy = gen_data.add_outliers(y_train,p_outliers,4.)
+		y_train_noisy = gen_data.add_outliers(y_train,p_outliers,2.)
 
 		m = 30
-		gw = 10.
+		gw = 1.
 		r,center_idx = kmeans.train_kmeans(x_train, y_train_noisy,m,gw)   
 		y_hat = r.sim_elm(x_test)
 		# pylab.plot(y_hat,label='ML')
 		mse_ml[i_iter,i_p] = ols.compute_mse(y_hat,y_test)
-		alpha = .5
+		alpha = .99
 		r.iterative_rbf(x_train,y_train_noisy,center_idx,alpha)
 		y_hat = r.sim_elm(x_test)
 		# pylab.plot(y_hat,label='WML')
@@ -63,12 +63,4 @@ print_results(mse_ml)
 print('WML')
 print_results(mse_wml)
 pylab.show()
-
-
-
-
-
-
-
-
 
