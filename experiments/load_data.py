@@ -272,4 +272,7 @@ def auto_mpg(mode='train'):
 
 
 if __name__=='__main__':
-	auto_mpg()
+	I,O = weather_ankara('train')
+	print(I.shape,O.shape)
+	I,O = weather_ankara('test')
+	print(I.shape,O.shape)
