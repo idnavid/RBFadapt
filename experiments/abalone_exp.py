@@ -1,16 +1,23 @@
+# Experiment on UCI real-world data. The objective is
+# test the performance of the adaptive RBFN training method
+# on real-world data. The data were selected based on existing
+# papers that addressed RBFN for regression. Particularly, in the
+# presence of outliers.
+# NS 2017
+
 import numpy as np
 import load_data
 import sys
-import pylab 
+import pylab
 sys.path.append("../")
 import gen_data
 import train_elm as elm
 import train_kmeans as kmeans
-import train_ols as ols 
+import train_ols as ols
 
 def print_results(mse):
 	"""
-	mse is an IxM matrix of mean squared errors. 
+	mse is an IxM matrix of mean squared errors.
 	I: number of iterations
 	m: number of network architectures
 	"""
@@ -32,21 +39,21 @@ if NOISE=='H':
 	# Heavy tail
 	pi1 = 0.8
 	mu1 = 0.;
-	mu2 = 0.; 
+	mu2 = 0.;
 	sigma1 = 1.
 	sigma2 = 12.
 	asym = False
 elif NOISE=='P':
 	pi1 = 0.8
 	mu1 = 0.;
-	mu2 = 10.; 
+	mu2 = 10.;
 	sigma1 = 1.
 	sigma2 = 0.25
 	asym = False
 elif NOISE=='A':
 	pi1 = 0.8
 	mu1 = 0.;
-	mu2 = 1.; 
+	mu2 = 1.;
 	sigma1 = 1.
 	sigma2 = 10.
 	asym = True
@@ -54,7 +61,7 @@ elif NOISE=='G':
 	# Single Gaussian noise
 	pi1 = 1.0
 	mu1 = 0.;
-	mu2 = 0.; 
+	mu2 = 0.;
 	sigma1 = 1.
 	sigma2 = 0.
 	asym = False
@@ -62,7 +69,7 @@ elif NOISE=='0':
 	# clean
 	pi1 = 1.0
 	mu1 = 0.;
-	mu2 = 0.; 
+	mu2 = 0.;
 	sigma1 = .01
 	sigma2 = 0.
 	asym = False
